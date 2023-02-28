@@ -100,7 +100,7 @@ class Line:
     def show(self, surface):
         pygame.draw.line(surface, "green", self.point1.get_coords(), self.point2.get_coords())
         
-class Target:
+class Box:
     def __init__(self, x, y, width, height):
         
         self.x = x
@@ -143,3 +143,44 @@ class Target:
     
     def __del__(self):
         print("Target deleted")
+        
+class TextBox:
+    
+    def __init__(self, text, size, font_colour, background_colour, x, y):
+        self.font = pygame.font.Font('freesansbold.ttf', size)
+        self.text = text
+        self.font_colour = font_colour
+        self.background_colour = background_colour
+        self.x = x
+        self.y = y
+        
+    def set_text(self, text):
+        self.text = text
+        
+    def set_colours(self, font_colour, background_colour):
+        self.font_colour = font_colour
+        self.background_colour = background_colour
+        
+    def set_x(self, x):
+        self.x = x
+    
+    def set_y(self, y):
+        self.y = y
+        
+    def get_text(self):
+        return self.text
+    
+    def get_colours(self):
+        return (self.font_colour, self.background_colour)
+        
+    def get_text_so():
+        text_so = font.render(text, True, font_colour, background_color)
+    
+    def get_coords():
+        return (x, y)
+    
+    def show(self, surface):
+        text_so = self.font.render(self.text, True, self.font_colour, self.background_colour)
+        text_rect = text_so.get_rect()
+        text_rect.topright = (self.x, self.y)
+        surface.blit(text_so, text_rect)

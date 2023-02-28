@@ -78,9 +78,9 @@ def get_slope(coords1: tuple[int, int], coords2: tuple[int, int]):
 
         return inf
     
-def randomize_coords(entity):
+def randomize_coords(entity) -> None:
     '''
-    moves target to a random location within 100 pixels of each border
+    sets entities coords to random values within 100 pixels of each border
     '''
     y_max = settings.SCREEN_HEIGHT - 100
     x_max = settings.SCREEN_WIDTH - 100
@@ -92,8 +92,14 @@ def randomize_coords(entity):
     entity.set_x(random_x)
     entity.set_y(random_y)
 
-def fire(turret, cursor, target_list) -> int:
-    hit = 0
+def fire(turret, cursor, target_list) -> list:
+    '''
+    scans each target in target list to detect if they are intersected and "hit"
+    by the line drawn from the turret to the cursor to the end of the screen
+    
+    Returns a list of all targets hit
+    '''
+    hit_list = []
     slope = get_slope(turret.get_coords(), cursor.get_coords())
     turret_x, turret_y = turret.get_coords()
     cursor_x = cursor.get_coords()[0]
@@ -114,15 +120,13 @@ def fire(turret, cursor, target_list) -> int:
         if slope == "up":
             if (target_border_top <= turret_y and
                 target_border_left <= turret_x <= target_border_right):
-                hit += 1
-                randomize_coords(target)
+                hit_list.append(target)
                 
         # Check directly down
         elif slope == "down":
             if (target_border_bottom >= turret_y and
                 target_border_left <= turret_x <= target_border_right):
-                hit += 1
-                randomize_coords(target)
+                hit_list.append(target)
                 
         # Check with slope, looking for intersection until reaching the border
         else:
@@ -143,8 +147,7 @@ def fire(turret, cursor, target_list) -> int:
                         prev_y <= target_border_bottom <= cur_y or
                         target_border_bottom >= cur_y >= target_border_top)):
                         
-                        hit += 1
-                        randomize_coords(target)
+                        hit_list.append(target)
                         break
                     
                     cur_x += 1
@@ -163,18 +166,17 @@ def fire(turret, cursor, target_list) -> int:
                         prev_y <= target_border_bottom <= cur_y or
                         target_border_bottom >= cur_y >= target_border_top)):
                         
-                        hit += 1
-                        randomize_coords(target)
+                        hit_list.append(target)
                         break
                         
                     cur_x -= 1
                     prev_y = cur_y
                     cur_y += slope
-    return hit
+    return hit_list
 
-def gen_target():
+def gen_box():
     '''
-    generates a new target at a random position within the borders of the screen
+    generates a new box at a random position within the borders of the screen
     by 100 pixels
     '''
     y_max = settings.SCREEN_HEIGHT - 100
@@ -184,13 +186,13 @@ def gen_target():
     
     random_x = random.uniform(x_min, x_max)
     random_y = random.uniform(y_min, y_max)
-    target = entities.Target(random_x, random_y, 50, 50)
+    box = entities.Box(random_x, random_y, 50, 50)
     
-    return target
+    return box
 
-def randomize_coords(entity):
+def randomize_coords(entity) -> None:
     '''
-    moves target to a random location within 100 pixels of each border
+    moves entitiy to a random location within 100 pixels of each border
     '''
     y_max = settings.SCREEN_HEIGHT - 100
     x_max = settings.SCREEN_WIDTH - 100
@@ -202,7 +204,7 @@ def randomize_coords(entity):
     entity.set_x(random_x)
     entity.set_y(random_y)
 
-def move_active(point):
+def move_active(point) -> None:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         point.move(0, 2) 
@@ -212,6 +214,3 @@ def move_active(point):
         point.move(-2, 0) 
     if keys[pygame.K_d]:
         point.move(2, 0)     
-    
-    
-    
